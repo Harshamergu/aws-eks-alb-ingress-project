@@ -22,6 +22,9 @@ eksctl
 
 Helm
 
+<img width="1920" height="1080" alt="Screenshot (9)" src="https://github.com/user-attachments/assets/d28c31af-24a7-47fa-bf84-dc83cba5702e" />
+<img width="1920" height="1080" alt="Screenshot (8)" src="https://github.com/user-attachments/assets/098dd5bb-1dd7-4849-9d3d-4222becd4e1d" />
+
 🔹 Step 1: Create EKS Cluster
 eksctl create cluster \
   --name demo-cluster \
@@ -50,6 +53,11 @@ Applications
 🧠 Interview Answer
 
 EKS is used to offload Kubernetes control plane management to AWS while maintaining scalability and availability.
+
+<img width="1920" height="1080" alt="Screenshot (3)" src="https://github.com/user-attachments/assets/453f6892-b65b-4e53-ad8b-8fded6726120" />
+
+<img width="1920" height="1080" alt="Screenshot (4)" src="https://github.com/user-attachments/assets/a9ba4090-9aed-4318-8daf-bc2dc89ce513" />
+
 
 🔹 Step 2: Associate IAM OIDC Provider
 eksctl utils associate-iam-oidc-provider \
@@ -104,6 +112,8 @@ IAM policy defines what AWS resources the controller can manage.
 🧠 Interview Answer
 
 We follow least privilege principle by attaching only required ELB and EC2 permissions to the controller role.
+
+<img width="1920" height="1080" alt="Screenshot (5)" src="https://github.com/user-attachments/assets/6e5aa2f3-bb40-4387-9304-e4b53085d288" />
 
 🔹 Step 4: Create IAM Role & Kubernetes Service Account
 eksctl create iamserviceaccount \
@@ -176,6 +186,8 @@ Creates Service
 Creates Ingress
 
 Ingress triggers ALB creation via controller.
+
+<img width="1920" height="1080" alt="Screenshot (2)" src="https://github.com/user-attachments/assets/a0ee8ab4-558b-4723-a1f3-f40ab54084da" />
 
 🔹 Step 7: Verify Ingress
 kubectl get ingress -n game-2048
