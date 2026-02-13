@@ -1,4 +1,4 @@
-🚀 AWS EKS + ALB Ingress Project (Game 2048 Deployment)
+# 🚀 AWS EKS + ALB Ingress Setup (Game 2048 Deployment)
 
 This project demonstrates deploying a Kubernetes application on Amazon Elastic Kubernetes Service and exposing it using AWS Load Balancer Controller.
 
