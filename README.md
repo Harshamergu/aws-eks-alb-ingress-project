@@ -266,20 +266,31 @@ eksctl delete cluster --name demo-cluster --region ap-south-1
 ## 🔥 Why This Project Is Important
 
 This demonstrates:
+
 Real-world production-grade ingress setup
+
 Secure IAM integration
+
 Infrastructure automation
+
 Cloud-native networking
+
 
 ## 🚀 Technologies Used
 
 Amazon Elastic Kubernetes Service
+
 AWS Load Balancer Controller
 Kubernetes
+
 Helm
+
 IAM
+
 ALB
+
 EC2
+
 
 # Output :
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6097944c-4b33-4490-8ced-ab814234142c" />
