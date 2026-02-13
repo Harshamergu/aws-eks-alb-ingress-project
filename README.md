@@ -5,33 +5,32 @@ This project demonstrates deploying a Kubernetes application on Amazon Elastic K
 Reference Implementation: Abhishek Veeramalla – AWS DevOps Zero to Hero (Day 22)
 
 🏗 Architecture Overview
-
+```
 User → ALB → Target Group → EKS Worker Nodes → Kubernetes Service → Pods
+```
 
 🛠 Prerequisites
-
+```
 AWS Account
-
 IAM User (Not Root) with AdministratorAccess
-
 AWS CLI
-
 kubectl
-
 eksctl
-
 Helm
+```
 
 <img width="1920" height="1080" alt="Screenshot (9)" src="https://github.com/user-attachments/assets/d28c31af-24a7-47fa-bf84-dc83cba5702e" />
 <img width="1920" height="1080" alt="Screenshot (8)" src="https://github.com/user-attachments/assets/098dd5bb-1dd7-4849-9d3d-4222becd4e1d" />
 
 🔹 Step 1: Create EKS Cluster
+```
 eksctl create cluster \
   --name demo-cluster \
   --region ap-south-1 \
   --nodegroup-name standard-workers \
   --node-type t3.medium \
   --nodes 2
+```
 
 ✅ Why?
 
@@ -60,9 +59,11 @@ EKS is used to offload Kubernetes control plane management to AWS while maintain
 
 
 🔹 Step 2: Associate IAM OIDC Provider
+```
 eksctl utils associate-iam-oidc-provider \
   --cluster demo-cluster \
   --approve
+```
 
 ✅ Why OIDC is Required?
 
@@ -89,11 +90,15 @@ AWS Load Balancer Controller cannot create ALB resources.
 OIDC allows Kubernetes service accounts to assume IAM roles securely without storing AWS credentials inside pods.
 
 🔹 Step 3: Create IAM Policy for Load Balancer Controller
+```
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+```
 
+```
 aws iam create-policy \
   --policy-name AWSLoadBalancerControllerIAMPolicy \
   --policy-document file://iam_policy.json
+```
 
 ✅ Why?
 
@@ -116,6 +121,8 @@ We follow least privilege principle by attaching only required ELB and EC2 permi
 <img width="1920" height="1080" alt="Screenshot (5)" src="https://github.com/user-attachments/assets/6e5aa2f3-bb40-4387-9304-e4b53085d288" />
 
 🔹 Step 4: Create IAM Role & Kubernetes Service Account
+
+```
 eksctl create iamserviceaccount \
   --cluster=demo-cluster \
   --namespace=kube-system \
@@ -123,6 +130,7 @@ eksctl create iamserviceaccount \
   --role-name AmazonEKSLoadBalancerControllerRole \
   --attach-policy-arn=arn:aws:iam::<ACCOUNT-ID>:policy/AWSLoadBalancerControllerIAMPolicy \
   --approve
+```
 
 ✅ Why?
 
@@ -143,9 +151,11 @@ Now controller pod can assume IAM role automatically.
 This enables secure AWS API access without embedding static access keys in containers.
 
 🔹 Step 5: Install AWS Load Balancer Controller (Helm)
+```
 helm repo add eks https://aws.github.io/eks-charts
 helm repo update
-
+```
+```
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   -n kube-system \
   --set clusterName=demo-cluster \
@@ -153,6 +163,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --set serviceAccount.name=aws-load-balancer-controller \
   --set region=ap-south-1 \
   --set vpcId=<YOUR-VPC-ID>
+```
 
 ✅ Why?
 
@@ -173,9 +184,12 @@ Without this controller:
 Ingress resource will not create ALB.
 
 🔹 Step 6: Deploy Application (2048 Game)
+```
 kubectl create namespace game-2048
-
+```
+```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/examples/2048/2048_full.yaml
+```
 
 ✅ What This Does
 
@@ -190,14 +204,16 @@ Ingress triggers ALB creation via controller.
 <img width="1920" height="1080" alt="Screenshot (2)" src="https://github.com/user-attachments/assets/a0ee8ab4-558b-4723-a1f3-f40ab54084da" />
 
 🔹 Step 7: Verify Ingress
+```
 kubectl get ingress -n game-2048
-
+```
 
 Copy ALB DNS.
 
 🔹 Step 8: Access Application
+```
 http://<ALB-DNS>
-
+```
 
 ⚠️ Must use HTTP (Port 80)
 
@@ -205,14 +221,16 @@ http://<ALB-DNS>
 If ALB not created:
 
 Check controller logs:
-
+```
 kubectl logs -n kube-system deployment/aws-load-balancer-controller
+```
 
 If Targets Unhealthy:
 
 Check:
-
+```
 EC2 → Target Groups → Health
+```
 
 Ensure:
 
@@ -243,34 +261,26 @@ Successfully exposed Kubernetes application using AWS ALB.
 Game accessible publicly via internet-facing load balancer.
 
 🧹 Cleanup
+```
 eksctl delete cluster --name demo-cluster --region ap-south-1
+```
 
 🔥 Why This Project Is Important
 
 This demonstrates:
-
 Real-world production-grade ingress setup
-
 Secure IAM integration
-
 Infrastructure automation
-
 Cloud-native networking
 
 🚀 Technologies Used
 
 Amazon Elastic Kubernetes Service
-
 AWS Load Balancer Controller
-
 Kubernetes
-
 Helm
-
 IAM
-
 ALB
-
 EC2
 
 Output :
